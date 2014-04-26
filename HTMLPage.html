@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Multipart UPload</title>
+</head>
+
+<body>
+	<h1>File Upload</h1>
+	
+	<form method="post" enctype="multipart/form-data">
+	<!-- <form method="post" enctype="application/x-www-form-urlencoded">  -->
+		<table>
+			<tr>
+				<td>Comment: </td>
+				<td><input type="text" name="comment"/></td>
+			</tr>
+			<tr>
+				<td>File: </td>
+				<td><input type="file" name="image"/></td>
+			</tr>
+		</table>
+		<input type="submit"/>
+	</form>
+</body>
+</html>
+
+
+
+<!-- <!DOCTYPE html>
+<head>
+<title></title>
+</head>
+<body>
+ <form method="post" enctype="multipart/form-data" action="/upload">
+ <form action="/upload" method="post" enctype="application/x-www-form-urlencoded"> 
+	<form action="/upload" method="post" enctype="multipart/form-data">
+		
+		<input type="text" name="test">
+		<input type="file" name="uploadFile"/>
+		<input type="submit" value="submit"/>
+	</form>
+</body>
+</html> -->

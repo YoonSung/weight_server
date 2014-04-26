@@ -5,10 +5,30 @@ console.log('\u001b[32m', '=============Start=============');
 var fs = require('fs');
 var http = require('http');
 var express = require('express');
+var mysql = require('mysql');
 
+//Use Connection Pool
+var pool = mysql.createPool({
+	host		: '54.178.137.153',
+//	host		: '172.31.7.199',
+//	user		: 'root',
+	user		: 'yoonsung',
+	database	: 'weight',
+	charset		: 'UTF8_GENERAL_CI',
+	timezone	: 'local',
+	password	: 'wlsduddl'
+});	
+
+
+//webserver
 var app = express();
 
+//for parsing request data
 app.use(express.bodyParser());//({uploadDir:__dirname + '/images'}));
+
+
+
+
 
 app.get('/', function(request, response)
 {
@@ -19,8 +39,14 @@ app.get('/', function(request, response)
 });
 
 app.post('/upload', function(request, response) {
-	console.log(request.body);
-	console.log(request.files);
+//	console.log(request.body);
+//	console.log(request.files);
+	
+	console.log(request.body.id);
+	console.log(request.body.isMan);
+	console.log(request.body.weight);
+	console.log(request.body.language);
+	console.log(request.body.path);
 	
 	fs.readFile(request.files.image.path, function(error, data) {
 			var filePath = __dirname + "/images/" + request.files.image.name;
@@ -31,6 +57,22 @@ app.post('/upload', function(request, response) {
 					response.json({ result: "fail" });
 					//response.send(err);
 				} else {
+					
+					requestQuery(
+						//error
+						//"INSERT tbl_weight(id, isman, weight, language, path) values( ??, ??, ??, ??, ??);"
+						
+						
+						"INSERT INTO tbl_weight(id, isMan, weight, language, path) values("
+						+"'" + request.body.id + "',"
+					 	+ request.body.isMan + ","
+						+ request.body.weight + ","
+						+"'" + request.body.language + "',"
+						+"'" + request.body.path + "');"
+						
+						, [request.body.id, request.body.isMan, request.body.weight, request.body.language, request.body.path]
+					);
+					
 					//response.send(filePath);
 					response.json({ result: "success" });
 				}	
@@ -40,6 +82,51 @@ app.post('/upload', function(request, response) {
 	//response.redirect('/');
 });
 
+
+
+//Execute Query
+function requestQuery(sql, ainsertValues) {
+	
+	//sql QueryGenerator. 
+	//Like Java PreparedStatement Class
+//	var sql = mysql.format(sql, ainsertValues);
+	
+	
+	
+	//===test code
+	console.log(sql);
+	
+	
+	var resultData = pool.getConnection(function(err, connection) {
+		
+		//when error occur
+		if (err) {
+			console.log("error occur");
+		}
+		
+		//connection request
+		connection.query(sql, function(err, queryResult) {
+			
+			//when error occur
+			if (err) {
+				console.log("Generate Sql Query Failed!!");
+			}
+			
+			console.log("Query Success!!!!!!");
+			//===test code
+			console.log("results : ", queryResult);
+			
+			return queryResult;
+		});
+	});
+	
+	console.log("query : ", resultData);
+//	console.log("query.sql : ", query.sql);
+}
+
+
+
+//server
 http.createServer(app).listen(9000, function() {
 	console.log('Server running');
 });
