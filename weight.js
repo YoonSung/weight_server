@@ -82,6 +82,14 @@ app.post('/upload', function(request, response) {
 	//response.redirect('/');
 });
 
+app.get('/upload', function(request, response) {
+	
+//	requestQuery(
+//		"SELECT * FROM tbl_weight WHERE language = (SELECT language FROM tbl_weight WHERE id ='"+request.body.id+"');";
+//	);
+	
+	console.log(request.body);
+});
 
 
 //Execute Query
