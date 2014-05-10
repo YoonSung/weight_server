@@ -42,10 +42,7 @@ app.post('/upload', function(request, response) {
 				requestQuery(			
 					"INSERT INTO tbl_weight(id, isMan, weight, language, path) values( ?, ?, ?, ?, ? ) "
 					,[request.body.id, request.body.isMan, request.body.weight, request.body.language, request.body.path]
-					,function(err, oResult) {
-						if (error) {
-							response.send("fail");
-						}
+					,function(oResult) {
 						
 						if (oResult["affectedRows"] === 1) {
 							response.send("true");	
@@ -70,6 +67,7 @@ app.post('/getList', function(request, response) {
 		,function(err, aResult) {
 			if (error) {
 				response.send("fail");
+				return;
 			}
 			
 			response.send(aResult);
@@ -91,6 +89,7 @@ function requestQuery(sql, aInsertValues, callbackFunction) {
 		
 		if (err) {
 			console.log("error occur : ",err);
+			return;
 		}
 		
 		//connection request
