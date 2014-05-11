@@ -55,7 +55,7 @@ app.post('/upload', function(request, response) {
 //						+"'" + request.body.language + "',"
 //						+"'" + request.body.path + "');"
 						
-						, [request.body.id, new Boolean(request.body.isMan), parseFloat(request.body.weight), request.body.language, request.body.path]
+						, [request.body.id, Boolean(request.body.isMan), parseFloat(request.body.weight), request.body.language, request.body.path]
 						,function(oResult) {
 							
 							var isSuccess =false;
