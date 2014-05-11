@@ -91,7 +91,8 @@ app.post('/getList', function(request, response) {
 				isSuccess= true;
 			}
 			response.json({"isSuccess": isSuccess, "list": aResult});
-		});
+		}
+	);
 });
 
 //Execute Query
