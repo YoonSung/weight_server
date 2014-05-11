@@ -56,14 +56,15 @@ app.post('/upload', function(request, response) {
 //						+"'" + request.body.path + "');"
 						
 						, [request.body.id, new Boolean(request.body.isMan), parseFloat(request.body.weight), request.body.language, request.body.path]
-						function(err, oResult) {
-							if (error) {
-								response.send("fail");
-							} else {
-								if (oResult["affectedRows"] === 1)
-									response.send("true");
-									else
+						,function(oResult) {
+							
+							var isSuccess =false;
+							
+							if ( oResult != null || oResult != undefined || oResult["affectedRows"] != 0) {						
+								isSuccess = true;
 							}
+							
+							response.send(""+isSuccess);
 						}
 					);
 					
