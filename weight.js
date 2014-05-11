@@ -81,8 +81,8 @@ app.post('/upload', function(request, response) {
 });
 
 app.post('/getList', function(request, response) {
-
-	requestQuery
+	console.log("/getList!!!!");
+	requestQuery(
 		"SELECT * FROM tbl_weight WHERE language = (SELECT language FROM tbl_weight WHERE id = ?)"
 		, [request.body.id]
 		, function(error, aResult) {
@@ -91,7 +91,7 @@ app.post('/getList', function(request, response) {
 				isSuccess= true;
 			}
 			response.json({"isSuccess": isSuccess, "list": aResult});
-		}
+		});
 });
 
 //Execute Query
