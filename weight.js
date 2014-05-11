@@ -9,7 +9,8 @@ var mysql = require('mysql');
 
 //Use Connection Pool
 var pool = mysql.createPool({
-	host		: '54.178.137.153',
+//	host		: '54.178.137.153',
+	host		: '127.0.0.1',
 //	host		: '172.31.7.199',
 //	user		: 'root',
 	user		: 'yoonsung',
@@ -56,12 +57,13 @@ app.post('/upload', function(request, response) {
 //						+"'" + request.body.path + "');"
 						
 						, [request.body.id, Boolean(request.body.isMan), parseFloat(request.body.weight), request.body.language, request.body.path]
-						,function(oResult) {
-							
+						,function(error, oResult) {
+							console.log("oResult : ", oResult);
 							var isSuccess =false;
 							
-							if ( oResult != null || oResult != undefined || oResult["affectedRows"] != 0) {						
-								isSuccess = true;
+							if ( oResult != null || oResult != undefined || oResult["affectedRows"] != null) {						
+								if ( oResult["affectedRows"] != null ) 
+									isSuccess = true;
 							}
 							
 							response.send(""+isSuccess);
@@ -70,7 +72,7 @@ app.post('/upload', function(request, response) {
 					
 					//response.send(filePath);
 					//response.json("true");
-					response.send("true");
+					//response.send("true");
 				}	
 			});
 		});
@@ -100,18 +102,15 @@ function requestQuery(sql, aInsertValues, callbackFunction) {
 		
 		if (err) {
 			console.log("error occur : ",err);
+		} else {
+			//connection request
+			connection.query(sql, function(err, queryResult) {
+				console.log("queryResult : ",queryResult);
+				console.log("callbackFunction : ",callbackFunction);
+				callbackFunction(err, queryResult);
+			});
 		}
 		
-		//connection request
-		connection.query(sql, function(err, queryResult) {
-			
-			//when error occur
-			if (err) {
-				console.log("Generate Sql Query Failed!!");
-			}
-			
-			callbackFunction(err, queryResult);
-		});
 	});
 };
 
