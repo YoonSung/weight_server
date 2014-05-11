@@ -81,11 +81,17 @@ app.post('/upload', function(request, response) {
 });
 
 app.post('/getList', function(request, response) {
-//	requestQuery(
-//		"SELECT * FROM tbl_weight WHERE language = (SELECT language FROM tbl_weight WHERE id ='"+request.body.id+"');";
-//	);
-	console.log("test!!!!!!!!!!!!!!!!!!!!!!");
-	console.log(request.body);
+
+	requestQuery(
+		"SELECT * FROM tbl_weight WHERE language = (SELECT language FROM tbl_weight WHERE id = ?)")
+		, [request.body.id]
+		, function(error, aResult) {
+			var isSuccess = false;
+			if ( ! error ) {
+				isSuccess= true;
+			}
+			response.json({"isSuccess": isSuccess, "list": aResult});
+		}
 });
 
 //Execute Query
