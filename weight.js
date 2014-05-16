@@ -18,7 +18,7 @@ var pool = mysql.createPool({
 	charset		: 'UTF8_GENERAL_CI',
 	timezone	: 'local',
 	password	: 'wlsduddl'
-});	
+});
 
 
 //webserver
