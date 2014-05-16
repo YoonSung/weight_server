@@ -9,8 +9,8 @@ var mysql = require('mysql');
 
 //Use Connection Pool
 var pool = mysql.createPool({
-//	host		: '54.178.137.153',
-	host		: '127.0.0.1',
+	host		: '54.178.137.153',
+//	host		: '127.0.0.1',
 //	host		: '172.31.7.199',
 //	user		: 'root',
 	user		: 'yoonsung',
@@ -35,6 +35,20 @@ app.use(express.bodyParser());//({uploadDir:__dirname + '/images'}));
 // 		response.send(data.toString());
 // 	});
 // });
+app.get('/image', function(request, response) {
+//	console.log(request.body);
+//	console.log(request.query.id);
+	var filePath = __dirname + "/images/" + request.query.id+".png";
+	console.log("filePath : "+filePath);
+	
+	fs.readFile(filePath, function(err, data) {
+	  if (err)
+	  	return; // Fail if the file can't be read.
+	  
+	  response.writeHead(200, {'content-Type' : 'image/png'})
+	  response.end(data);
+	});
+});
 
 app.post('/upload', function(request, response) {
 	
@@ -86,11 +100,12 @@ app.post('/getList', function(request, response) {
 		"SELECT * FROM tbl_weight WHERE language = (SELECT language FROM tbl_weight WHERE id = ?)"
 		, [request.body.id]
 		, function(error, aResult) {
-			var isSuccess = false;
 			if ( ! error ) {
-				isSuccess= true;
+				response.json(aResult);
+			} else {
+				response.json("error");
 			}
-			response.json({"isSuccess": isSuccess, "list": aResult});
+
 		}
 	);
 });
