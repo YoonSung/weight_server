@@ -95,6 +95,8 @@ app.post('/upload', function(request, response) {
 
 app.post('/getList', function(request, response) {
 	console.log("/getList!!!!");
+	console.log(request.body);
+	
 	requestQuery(
 		"SELECT * FROM tbl_weight WHERE language = (SELECT language FROM tbl_weight WHERE id = ?)"
 		, [request.body.id]
@@ -129,7 +131,9 @@ function requestQuery(sql, aInsertValues, callbackFunction) {
 				console.log("queryResult : ",queryResult);
 				console.log("callbackFunction : ",callbackFunction);
 				callbackFunction(err, queryResult);
-			});
+			})
+			
+			connection.release();
 		}
 		
 	});
