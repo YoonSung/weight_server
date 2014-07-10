@@ -38,7 +38,7 @@ app.use(express.bodyParser());//({uploadDir:__dirname + '/images'}));
 app.get('/image', function(request, response) {
 	
 	var filePath = __dirname + "/images/" + request.query.id+".png";
-	console.log("filePath : "+filePath);
+	//console.log("filePath : "+filePath);
 	
 	fs.readFile(filePath, function(err, data) {
 	  if (err)
@@ -56,8 +56,8 @@ app.post('/upload', function(request, response) {
 			console.log(filePath);
 			
 			fs.writeFile(filePath, data, function(err) {
-				if (error) {
-					response.send("fail");
+				if (err) {
+					response.send(err);
 					//response.send(err);
 				} else {
 					
@@ -104,7 +104,9 @@ app.post('/getList', function(request, response) {
 			if ( ! error ) {
 				response.json(aResult);
 			} else {
-				response.json("error");
+				console.log("error : "+error);
+				console.log("aResult : "+aResult);
+				response.json(error);
 			}
 
 		}
