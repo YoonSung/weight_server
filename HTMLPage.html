@@ -1,43 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title> Multipart UPload</title>
+	<title>Simple Manager Page</title>
 </head>
-
 <body>
-	<h1>File Upload</h1>
-	
-	<form method="post" enctype="multipart/form-data">
-	<!-- <form method="post" enctype="application/x-www-form-urlencoded">  -->
-		<table>
-			<tr>
-				<td>Comment: </td>
-				<td><input type="text" name="comment"/></td>
-			</tr>
-			<tr>
-				<td>File: </td>
-				<td><input type="file" name="image"/></td>
-			</tr>
-		</table>
-		<input type="submit"/>
-	</form>
+	<div id="entire">
+		<div id="info"></div>
+		<div id="content"></div>
+		<div id="control">
+			<button id="prev">Prev</button>
+			<button id="next">Next</button>
+		</div>
+	</div>
 </body>
+<script>
+
+	var currentPageNum = 0;
+	function getRequestUrl() {
+		var url = "/manager/getData";
+
+		var startNumber = currentPageNum*5 + 1;
+		url += "/"+(startNumber);
+		url += "/"+(startNumber+4);
+		console.log("url : "+url);
+		return url;
+	}
+
+	function requestAjax() {
+		var url = getRequestUrl();
+		console.log("url : ",url);
+		var request = new XMLHttpRequest();
+		request.open("GET", url, true);
+		request.onreadystatechange = function() {
+
+			if (request.readyState == 4 && request.status == 200) {
+				console.log(request.responseText);
+				//var obj = JSON.parse(request.responseText);
+			}
+		}
+		request.send();
+	}
+
+	requestAjax();
+</script>
 </html>
-
-
-
-<!-- <!DOCTYPE html>
-<head>
-<title></title>
-</head>
-<body>
- <form method="post" enctype="multipart/form-data" action="/upload">
- <form action="/upload" method="post" enctype="application/x-www-form-urlencoded"> 
-	<form action="/upload" method="post" enctype="multipart/form-data">
-		
-		<input type="text" name="test">
-		<input type="file" name="uploadFile"/>
-		<input type="submit" value="submit"/>
-	</form>
-</body>
-</html> -->

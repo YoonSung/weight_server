@@ -1,5 +1,6 @@
 console.log('\u001b[1m');
 console.log('\u001b[32m', '=============Start=============');
+console.log('\u001b[1m');
 
 
 var fs = require('fs');
@@ -24,17 +25,73 @@ var pool = mysql.createPool({
 //webserver
 var app = express();
 
+function isUndefinedOrNull(data) {
+	return (data === undefined || data === null)
+}
+
 //for parsing request data
 app.use(express.bodyParser());//({uploadDir:__dirname + '/images'}));
 
+//var OFFICE = 
+//var NEXT = 
 
-// app.get('/', function(request, response)
-// {
-// 	fs.readFile('HTMLPage.html', function(error, data)
-// 	{
-// 		response.send(data.toString());
-// 	});
-// });
+function isValidAccess(request) {
+	var clientAddress = request.connection.remoteAddress;
+	console.log("clientAddress : ", clientAddress);
+
+	/*
+	if (clientAddress != OFFICE || clientAddress != NEXT)
+		return false;
+	else
+		*/
+		return true;
+}
+
+function error404(response) {
+	response.writeHead(404, {
+		"Content-Type": "text/plain",
+		'Location': 'error/404/notExists'
+	});
+	response.end();
+}
+
+app.get('/manager', function(request, response)
+{
+	if (isUndefinedOrNull(request) == true || isValidAccess(request) == false) {
+		error404(response);
+		return;
+	}
+
+	fs.readFile('HTMLPage.html', function(error, data)
+	{
+		response.send(data.toString());
+	});
+});
+
+app.get('/manager/getData/:startNumber/:endNumber', function(request, response) {
+
+	if (isUndefinedOrNull(request) == true || isValidAccess(request) == false) {
+		error404(response);
+		return;
+	}
+
+	var startNumber = request.params.startNumber;
+	var endNumber = request.params.endNumber;
+	var count = endNumber - startNumber;
+
+	requestQuery(
+		"SELECT * FROM tbl_weight ORDER BY num LIMIT ?, ?"
+		, [startNumber, count]
+		, function(error, aResult) {
+			if ( ! error ) {
+				response.json(aResult);
+			} else {
+				response.json("error");
+			}
+		}
+	);
+});
+
 app.get('/image', function(request, response) {
 	
 	var filePath = __dirname + "/images/" + request.query.id+".png";
@@ -44,7 +101,7 @@ app.get('/image', function(request, response) {
 	  if (err)
 	  	return; // Fail if the file can't be read.
 	  
-	  response.writeHead(200, {'content-Type' : 'image/png'})
+	  response.writeHead(200, {'content-Type' : 'image/png'});
 	  response.end(data);
 	});
 });
@@ -146,4 +203,4 @@ http.createServer(app).listen(8080, function() {
 	console.log('Server running');
 });
 
-console.log('\u001b[0m');
+console.log('\u001b[1m');
