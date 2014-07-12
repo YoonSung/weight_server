@@ -68,15 +68,15 @@ app.get('/manager', function(request, response)
 	});
 });
 
-app.get('/manager/getData/:startNumber/:endNumber', function(request, response) {
-
+app.get('/getData', function(request, response) {
+	//console.log(request.query);
 	if (isUndefinedOrNull(request) == true || isValidAccess(request) == false) {
 		error404(response);
 		return;
 	}
 
-	var startNumber = request.params.startNumber;
-	var endNumber = request.params.endNumber;
+	var startNumber = parseInt(request.query.startNumber, 10);
+	var endNumber = parseInt(request.query.endNumber, 10);
 	var count = endNumber - startNumber;
 
 	requestQuery(

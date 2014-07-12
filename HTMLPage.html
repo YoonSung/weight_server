@@ -2,45 +2,91 @@
 <html>
 <head>
 	<title>Simple Manager Page</title>
+	<style>
+		* {
+			font-size: 20px;
+		}
+	</style>
 </head>
 <body>
 	<div id="entire">
-		<div id="info"></div>
+		<div id="template" style="display:none;">
+			<div style="border: 1px solid black;max-width:700px;">
+				<img class="img"></p>
+				<button>delete</button>
+				<p class="weight"></p>
+				<p class="language"></p>
+			</div>
+		</div>
+
 		<div id="content"></div>
-		<div id="control">
+		<div id="control" style="position:fixed;top:30px;right:30px;height:30px;">
 			<button id="prev">Prev</button>
 			<button id="next">Next</button>
 		</div>
 	</div>
+
 </body>
 <script>
-
 	var currentPageNum = 0;
-	function getRequestUrl() {
-		var url = "/manager/getData";
 
-		var startNumber = currentPageNum*5 + 1;
-		url += "/"+(startNumber);
-		url += "/"+(startNumber+4);
-		console.log("url : "+url);
+	var List = {
+		size: 5,
+		array: [],
+		update: function(arr) {
+			for(var i = 0 ; i < this.array.length ; ++i) {
+				console.log("this.array[",i,"] = ",this.array[i]);
+				this.array[i].querySelector(".img").src = "http://54.178.137.153:8080/image?id="+arr[i].id;//"http://img.naver.net/static/www/u/2013/0731/nmms_224940510.gif"; 
+				this.array[i].querySelector(".weight").innerText = "몸무게 : "+arr[i].weight;
+				this.array[i].querySelector(".language").innerText = "언어권 : "+arr[i].language;
+				this.array[i].querySelector("button").className = arr[i].id;
+			}
+		}
+	}
+
+	window.onload = function(){
+		alert("test");
+		var templateSize = List.size;
+
+		var templateNode = document.querySelector("#template > div");
+		var copiedNode = null;
+		var attachedTarget = document.getElementById("content");
+
+		for(index = 0 ; index < templateSize ; ++index) {
+			copiedNode = templateNode.cloneNode(true);
+			List.array.push(copiedNode);
+			console.log(List.array);
+			attachedTarget.appendChild(copiedNode);
+		}
+
+		requestAjax();
+	}
+
+	function getRequestUrl() {
+		var url = "/getData?";
+
+		var startNumber = currentPageNum*List.size + 1;
+		url += "startNumber="+(startNumber);
+		url += "&endNumber="+(startNumber+List.size);
 		return url;
 	}
 
 	function requestAjax() {
 		var url = getRequestUrl();
-		console.log("url : ",url);
 		var request = new XMLHttpRequest();
-		request.open("GET", url, true);
+		request.open("GET", url, false);
 		request.onreadystatechange = function() {
-
+			console.log(request.readyState);
+			console.log(request.status);
 			if (request.readyState == 4 && request.status == 200) {
-				console.log(request.responseText);
-				//var obj = JSON.parse(request.responseText);
+				var aResult = JSON.parse(request.responseText);
+				//console.log(aResult);
+				List.update(aResult);
 			}
 		}
-		request.send();
+		request.send({startNumber: 1, endNumber:3});
 	}
 
-	requestAjax();
+	
 </script>
 </html>
