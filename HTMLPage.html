@@ -21,8 +21,8 @@
 
 		<div id="content"></div>
 		<div id="control" style="position:fixed;top:30px;right:30px;height:30px;">
-			<button id="prev">Prev</button>
-			<button id="next">Next</button>
+			<button id="prev">PREV</button>
+			<button id="next">NEXT</button>
 		</div>
 	</div>
 
@@ -34,6 +34,13 @@
 		size: 5,
 		array: [],
 		update: function(arr) {
+
+			if (arr.length === 0) {
+				alert("마지막 페이지입니다.");
+				return;
+			}
+			currentPageNum++;
+
 			for(var i = 0 ; i < this.array.length ; ++i) {
 				console.log("this.array[",i,"] = ",this.array[i]);
 				this.array[i].querySelector(".img").src = "http://54.178.137.153:8080/image?id="+arr[i].id;//"http://img.naver.net/static/www/u/2013/0731/nmms_224940510.gif"; 
@@ -45,7 +52,7 @@
 	}
 
 	window.onload = function(){
-		alert("test");
+
 		var templateSize = List.size;
 
 		var templateNode = document.querySelector("#template > div");
@@ -58,8 +65,51 @@
 			console.log(List.array);
 			attachedTarget.appendChild(copiedNode);
 		}
-
+		registerEvent();
 		requestAjax();
+	}
+
+	function registerEvent() {
+		var entire = document.getElementById("entire");
+		console.log(entire);
+		entire.addEventListener("click", function(e) {
+			if (e.target.tagName == "BUTTON") {
+				if (e.target.id == "prev") {
+					if (currentPageNum === 0)
+						return;
+					--currentPageNum;
+					requestAjax();
+
+				} else if (e.target.id == "next") {
+					++currentPageNum;
+					requestAjax();
+				} else {
+					//delete
+					deleteAjax(e.target.className);
+				}
+			} else {
+				console.log(e.target);
+				console.log(e.target.tagName);
+			}
+		});
+	}
+
+	function deleteAjax(id) {
+		alert(id);
+
+		var url = "/deleteData?id="+id;
+		var request = new XMLHttpRequest();
+		request.open("GET", url, false);
+
+		request.onreadystatechange = function() {
+			if (request.readyState == 4 && request.status == 200) {
+				var oResult = JSON.parse(request.responseText);
+				
+				console.log(oResult);
+				location.reload(true);
+			}
+		}
+		request.send();
 	}
 
 	function getRequestUrl() {
@@ -84,7 +134,7 @@
 				List.update(aResult);
 			}
 		}
-		request.send({startNumber: 1, endNumber:3});
+		request.send();
 	}
 
 	

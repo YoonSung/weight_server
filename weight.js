@@ -68,6 +68,28 @@ app.get('/manager', function(request, response)
 	});
 });
 
+app.get('/deleteData', function(request, response)
+{
+	if (isUndefinedOrNull(request) == true || isValidAccess(request) == false) {
+		error404(response);
+		return;
+	}
+
+	var id = parseInt(request.query.id, 10);
+
+	requestQuery(
+		"DELETE FROM tbl_weight WHERE id = ?"
+		,[id]
+		, function(error, oResult) {
+			if (oResult["affectedRows"] == 1) {
+				response.send(true);
+			} else {
+				response.send(false);
+			}
+		}
+	);
+});
+
 app.get('/getData', function(request, response) {
 	//console.log(request.query);
 	if (isUndefinedOrNull(request) == true || isValidAccess(request) == false) {
