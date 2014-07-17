@@ -32,19 +32,20 @@ function isUndefinedOrNull(data) {
 //for parsing request data
 app.use(express.bodyParser());//({uploadDir:__dirname + '/images'}));
 
-//var OFFICE = 
-//var NEXT = 
+var OFFICE = "125.176.84.152";
+var NEXT = "111.91.142.180";
+var LOCAL_HOST = "127.0.0.1";
 
 function isValidAccess(request) {
 	var clientAddress = request.connection.remoteAddress;
 	console.log("clientAddress : ", clientAddress);
 
-	/*
-	if (clientAddress != OFFICE || clientAddress != NEXT)
-		return false;
-	else
-		*/
+	
+	if (clientAddress == OFFICE || clientAddress == NEXT || clientAddress == LOCAL_HOST) {
 		return true;
+	}
+	
+	return false;
 }
 
 function error404(response) {
